@@ -1,0 +1,15 @@
+{% extends 'blog/base.html' %}      
+{% block title %}{{ object.title }}{% endblock %}
+
+{% block content %}
+
+<h2>{{ object.title }}</h2>
+<p>{{ object.body }}</p>
+<p>Author: {{ object.author.username }}</p>
+
+{% if user == object.author %}
+    <a href="{% url 'post_update' object.pk %}">Edit</a>
+    <a href="{% url 'post_delete' object.pk %}">Delete</a>
+{% endif %}
+
+{% endblock %}
