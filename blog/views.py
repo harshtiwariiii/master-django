@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from .models import Post
-from .forms import PostForm
+from django.contrib.auth import login
+from .forms import PostForm,UserRegisterForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView,CreateView,DetailView,UpdateView,DeleteView
 from django.urls import reverse_lazy
@@ -30,6 +31,7 @@ class PostDetailView(DetailView):
     template_name='blog/post_detail.html'
 
 
+# creating a post
 class PostCreateView(LoginRequiredMixin,CreateView):
     model = Post
     form_class = PostForm
@@ -39,7 +41,7 @@ class PostCreateView(LoginRequiredMixin,CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
     
-
+# updating a post
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     form_class = PostForm
@@ -49,7 +51,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         post = self.get_object()
         return self.request.user == post.author  
 
-
+# deleting a post
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     template_name = 'blog/post_confirm_delete.html'
@@ -58,6 +60,21 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
+
+
+
+# user registration view
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST) # CHECK IF USER SUBMMITEDTHE FORM 
+        if form.is_valid():#VALIDATE THE FROM USER/PAS
+            user = form.save()#CREATING USER AT DATABASE 
+            login(request,user)#LOGIN THE USER IMMEDATLY AFTER REGISTRATION
+            return redirect('login')
+    else:
+         form = UserRegisterForm()
+
+    return render(request,'blog/register.html',{'form':form})
 
 
 
