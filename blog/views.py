@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from .models import Post
 from django.contrib.auth import login
-from .forms import PostForm,UserRegisterForm,ProfileUpdateForm
+from .forms import PostForm,UserRegisterForm,ProfileUpdateForm,ContactForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView,CreateView,DetailView,UpdateView,DeleteView
 from django.urls import reverse_lazy
@@ -91,6 +91,28 @@ def profile(request):
         form = ProfileUpdateForm(instance=request.user.profile)
     
     return render(request,'blog/profile.html',{'form':form})
+
+
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # Access cleaned data
+            name = form.cleaned_data['name']
+            email=form.cleaned_data['email']
+            message=form.cleaned_data['message']
+
+            # For now, just print in console (later you can send email)
+            print("New contact message",name,email,message)
+
+            return render(request,"blog/contact_success.html",{'name':name})
+    
+    else:
+        form = ContactForm()
+
+    return render(request,"blog/contact.html",{'form':form})
+            
+           
 
 
 
