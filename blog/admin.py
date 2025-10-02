@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post
+from .models import Post, Profile
 
 
 # Register your models here.
@@ -13,3 +13,4 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ('title', 'body')
 
 admin.site.register(Post, PostAdmin)
+admin.site.register(Profile)

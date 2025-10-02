@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from .models import Post
 from django.contrib.auth import login
-from .forms import PostForm,UserRegisterForm
+from .forms import PostForm,UserRegisterForm,ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView,CreateView,DetailView,UpdateView,DeleteView
 from django.urls import reverse_lazy
@@ -76,6 +76,21 @@ def register(request):
          form = UserRegisterForm()
 
     return render(request,'blog/register.html',{'form':form})
+
+
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST,request.FILES,instance=request.user.profile) # request.FILES for profile picture required 
+        if form.is_valid():
+            form.save()
+            # messages.success(request,"your profile has been updated!")
+            # return redirect('profile')
+    else:
+        form = ProfileUpdateForm(instance=request.user.profile)
+    
+    return render(request,'blog/profile.html',{'form':form})
 
 
 
