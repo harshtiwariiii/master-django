@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from .models import Post
+from django.contrib import messages
 from django.contrib.auth import login
 from .forms import PostForm,UserRegisterForm,ProfileUpdateForm,ContactForm
 from django.contrib.auth.decorators import login_required
@@ -97,17 +98,35 @@ def contact_view(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-           form.save()
-           return render(request,"blog/contact_success.html",{"name":form.cleaned_data['name']})
+            # Normally we’d send an email or save the data here
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
 
+            # Just show a success message for now
+            messages.success(request, f"Thanks {name}, your message has been received!")
+            return redirect('contact')  # redirect to the same page to clear the form
     else:
         form = ContactForm()
 
-    return render(request,"blog/contact.html",{'form':form})
+    return render(request, 'blog/contact.html', {'form': form})
             
            
 
+@login_required
+def post_create(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('home')
+    else:
+        form =PostForm()
+    return render(request,'blog/psot_form.html',{'form':form})
 
+            
 
 
 
