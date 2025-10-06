@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post,Profile
+from .models import Post,Profile,ContactMessage
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -27,7 +27,11 @@ class ProfileUpdateForm(forms.ModelForm):
 class ContactForm(forms.Form):
     name= forms.CharField(max_length=100,required=True,label="Your Name")
     email = forms.EmailField(required=True,label="Your Email")
-    message = forms.CharField(widget=forms.Textarea,required=True,label="Your Message")\
+    message = forms.CharField(widget=forms.Textarea,required=True,label="Your Message")
+
+    class Meta:
+        model = ContactMessage
+        fields = ['name','email','message'] #👉 This automatically creates form fields from model fields.(DRY) do not reapeat yourself 
     
 
     # custom validation for name field  

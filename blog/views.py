@@ -97,16 +97,9 @@ def contact_view(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            # Access cleaned data
-            name = form.cleaned_data['name']
-            email=form.cleaned_data['email']
-            message=form.cleaned_data['message']
+           form.save()
+           return render(request,"blog/contact_success.html",{"name":form.cleaned_data['name']})
 
-            # For now, just print in console (later you can send email)
-            print("New contact message",name,email,message)
-
-            return render(request,"blog/contact_success.html",{'name':name})
-    
     else:
         form = ContactForm()
 
