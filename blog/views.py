@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView,CreateView,DetailView,UpdateView,DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
+from rest_framework import generics
+from .serializers import PostSerializer
 
 
 # Create your views here.
@@ -125,6 +127,19 @@ def post_create(request):
     else:
         form =PostForm()
     return render(request,'blog/psot_form.html',{'form':form})
+
+
+
+class PostListAPI(generics.ListCreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+
+class PostDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+    
 
             
 
